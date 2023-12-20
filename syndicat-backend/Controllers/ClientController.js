@@ -3,23 +3,41 @@ const {BadRequestErrorClass,UnauthenticatedErrorClass} = require('../Exceptions'
 const {StatusCodes} = require('http-status-codes')
 const { v4: uuidv4 } = require('uuid');
 const addClient = async(req, res)=>{
-    const {firstName, lastName,email} = req.body
-    const isExisting = await Client.find({email})
-    if(isExisting.length !== 0){
-        throw new BadRequestErrorClass("this email already exists")
+    const { firstName, lastName, email } = req.body;
+
+    const isExisting = await Client.findOne({ email });
+    if (isExisting) {
+        throw new BadRequestErrorClass("This email already exists");
     }
-    if(!firstName || !lastName){
-        throw new BadRequestErrorClass("Please Provide a first and last name")
+
+    if (!firstName || !lastName) {
+        throw new BadRequestErrorClass("Please provide a first and last name");
     }
-    const name = firstName + ' ' + lastName
+
+    const name = firstName + ' ' + lastName;
+    const _sub = uuidv4()
+    console.log(_sub)
+
+    // Create the client object without explicitly setting _sub
     const clientObj = {
+        _sub,
         name,
         firstName,
         lastName,
-        email
+        email,
+    };
+
+    try {
+        // Create a new client without providing _sub (it will be automatically generated)
+        const newClient = await Client.create(clientObj);
+
+        // Respond with success message
+        res.status(StatusCodes.CREATED).json({ msg: 'Success! Your client has been created', client: newClient });
+    } catch (error) {
+        // Handle any errors that occur during the creation process
+        console.error(error);
+        throw new InternalServerErrorClass("Failed to create a new client");
     }
-    await Client.create(clientObj)
-    res.status(StatusCodes.CREATED).json({msg: 'Success! Your client has been created'})
 }
 
 const updateClient = async (req, res)=>{
@@ -29,7 +47,7 @@ const updateClient = async (req, res)=>{
     }
     const name = firstName + ' ' + lastName
     const client = await Client.findOneAndUpdate({_sub},{name,firstName,lastName,email},{new:true,runValidators:true})
-    res.status(StatusCodes.OK).json({client})
+    res.status(StatusCodes.OK).json({client,msg:"Client updated successfully"})
 }
 
 const deleteClient = async (req,res)=>{

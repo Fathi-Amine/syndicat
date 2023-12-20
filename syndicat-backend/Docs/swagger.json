@@ -1,0 +1,549 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Your API Documentation",
+    "version": "1.0.0",
+    "description": "This is the API documentation for Your Project."
+  },
+  "components": {
+    "schemas": {
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "apartment": {
+            "type": "string",
+            "description": "ID of the associated apartment"
+          },
+          "month": {
+            "type": "string",
+            "format": "date",
+            "description": "Month of the payment"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Payment amount"
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the payment"
+          },
+          "isPaid": {
+            "type": "boolean",
+            "default": false,
+            "description": "Flag indicating if the payment is paid"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "ID of the user who created the payment"
+          },
+          "client": {
+            "type": "string",
+            "description": "ID of the associated client"
+          }
+        },
+        "required": ["apartment", "month", "amount", "paymentDate"]
+      },
+      "Client": {
+        "type": "object",
+        "properties": {
+          "_sub": {
+            "type": "string",
+            "description": "Unique identifier for the client"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the client"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name of the client"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name of the client"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the client"
+          }
+        },
+        "required": ["_sub", "name", "firstName", "lastName", "email"]
+      },
+      "Apartment": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "number",
+            "description": "Apartment number"
+          },
+          "residence": {
+            "type": "string",
+            "description": "Name of the residence"
+          },
+          "floor": {
+            "type": "string",
+            "description": "Floor of the apartment"
+          },
+          "building": {
+            "type": "string",
+            "description": "Unique identifier for the building"
+          },
+          "client": {
+            "type": "string",
+            "description": "ID of the associated client"
+          }
+        },
+        "required": ["number", "residence", "floor", "building", "client"]
+      }
+    }
+  },
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Create a new user account with provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login with user credentials",
+        "description": "Authenticate and log in a user with their credentials.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User login successful"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid credentials"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "summary": "Logout the user",
+        "description": "Log out the currently authenticated user.",
+        "responses": {
+          "200": {
+            "description": "User logged out successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "summary": "Reset user password",
+        "description": "Reset the password for a user account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "summary": "Forgot user password",
+        "description": "Initiate the process of resetting a forgotten password.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset request sent successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/payments/add": {
+      "post": {
+        "summary": "Add a new payment",
+        "description": "Add a new payment with the provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment added successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/payments/update": {
+      "patch": {
+        "summary": "Update a payment",
+        "description": "Update an existing payment with the provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/payments/delete": {
+      "delete": {
+        "summary": "Delete a payment",
+        "description": "Delete an existing payment.",
+        "responses": {
+          "200": {
+            "description": "Payment deleted successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "summary": "Get all payments",
+        "description": "Retrieve a list of all payments.",
+        "responses": {
+          "200": {
+            "description": "List of payments retrieved successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/payments/:paymentId": {
+      "get": {
+        "summary": "Get payment by ID",
+        "description": "Retrieve information about a specific payment by its ID.",
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully"
+          },
+          "404": {
+            "description": "Payment not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/payments/by-apartment/:apartmentId": {
+      "get": {
+        "summary": "Get payments by apartment ID",
+        "description": "Retrieve a list of payments associated with a specific apartment.",
+        "responses": {
+          "200": {
+            "description": "List of payments retrieved successfully"
+          },
+          "404": {
+            "description": "Apartment not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clients": {
+      "get": {
+        "summary": "Get all clients",
+        "description": "Retrieve a list of all clients.",
+        "responses": {
+          "200": {
+            "description": "List of clients retrieved successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clients/add-client": {
+      "post": {
+        "summary": "Add a new client",
+        "description": "Add a new client with the provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client added successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clients/update-client": {
+      "patch": {
+        "summary": "Update a client",
+        "description": "Update an existing client with the provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clients/delete-client": {
+      "delete": {
+        "summary": "Delete a client",
+        "description": "Delete an existing client.",
+        "responses": {
+          "200": {
+            "description": "Client deleted successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clients/:clientSub": {
+      "get": {
+        "summary": "Get client by subscription ID",
+        "description": "Retrieve information about a specific client by their subscription ID.",
+        "responses": {
+          "200": {
+            "description": "Client retrieved successfully"
+          },
+          "404": {
+            "description": "Client not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/apartments/add": {
+      "post": {
+        "summary": "Add a new apartment",
+        "description": "Add a new apartment with the provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Apartment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Apartment added successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/apartments/update-apartment": {
+      "patch": {
+        "summary": "Update an apartment",
+        "description": "Update an existing apartment with the provided information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Apartment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Apartment updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/apartments/delete": {
+      "delete": {
+        "summary": "Delete an apartment",
+        "description": "Delete an existing apartment.",
+        "responses": {
+          "200": {
+            "description": "Apartment deleted successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/apartments": {
+      "get": {
+        "summary": "Get all apartments",
+        "description": "Retrieve a list of all apartments.",
+        "responses": {
+          "200": {
+            "description": "List of apartments retrieved successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/apartments/:apartmentId": {
+      "get": {
+        "summary": "Get apartment by ID",
+        "description": "Retrieve information about a specific apartment by its ID.",
+        "responses": {
+          "200": {
+            "description": "Apartment retrieved successfully"
+          },
+          "404": {
+            "description": "Apartment not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}

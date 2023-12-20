@@ -42,13 +42,19 @@ const getApartments = async(req, res) => {
 const getApartmentById = async (req, res)=>{
     const apartment = await Apartment.findOne({_id:req.params.apartmentId}).populate({
         path: 'client',
-        select: '-_id name firstName lastName _sub email',
+        select: '_id name firstName lastName _sub email',
     })
     res.status(StatusCodes.OK).json(apartment)
+}
+
+const deleteApartment = async (req, res)=>{
+    await Apartment.findOneAndDelete({_id:req.body._id})
+    res.status(StatusCodes.OK).json({msg:"Apartment deleted"})
 }
 module.exports = {
     addApartment,
     updateApartment,
     getApartments,
-    getApartmentById
+    getApartmentById,
+    deleteApartment
 }

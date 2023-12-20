@@ -13,7 +13,7 @@ const crypto = require('crypto')
 const register = async (req, res)=>{
     const origin = req.get('origin')
     const {username,email} = req.body
-
+    console.log(req.body)
     const userToken = {name: username, email:email}
     const verificationToken = jwt.sign(userToken, process.env.JWT_SECRET, {expiresIn: '10m'})
     const user = await User.create({...req.body,verificationToken})

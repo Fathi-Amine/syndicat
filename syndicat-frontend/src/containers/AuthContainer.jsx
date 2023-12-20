@@ -1,37 +1,72 @@
-import React from 'react';
-import {useSelector} from "react-redux";
-import Hbg from '../assets/home-bg.png'
-import {Link} from "react-router-dom";
 
-const Hero = () => {
+import React, {useEffect, useState} from 'react';
+import {Routes, Route, Link, useLocation} from 'react-router-dom';
+import syndicatVid from "../assets/Syndic de copropriété rôle et missions d un syndic - Le Droit pour Moi.mp4"; // Import your NavBar component
+import Login from '../components/Login.jsx';
+import Register from "../components/Register.jsx";
+import Verify from "../components/Verify.jsx";
 
-    // const {userInfo} = useSelector((state)=>state.auth)
+const AuthContainer = () => {
+    const location = useLocation();
+    const currentRoute = location.pathname;
+
+    const [showButtons, setShowButtons] = useState(true);
+
+    useEffect(() => {
+        setShowButtons(currentRoute !== '/login' && currentRoute !== '/register' && currentRoute !== '/mail/verify-email');
+    }, [currentRoute]);
     return (
-        <div className="relative h-screen">
-            {/* Background Image */}
-            <img
-                src={Hbg}
-                alt="Background"
-                className="absolute inset-0 object-cover w-full h-full"
-            />
+        <div className="flex justify-start items-center flex-col h-screen">
+            <div className="relative w-full h-full">
+                <video
+                    src={syndicatVid}
+                    typeof="video/mp4"
+                    loop
+                    controls={false}
+                    muted
+                    autoPlay
+                    className={"w-full h-full object-cover"}
+                    style={{ clipPath: "inset(1px 1px)"}}
+                />
 
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-black opacity-50"></div>
+                <div className="absolute flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0 bg-blackOverlay">
+                    <div className="shadow-2xl">
+                    {/* Auth form container */}
 
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                <h1 className="text-4xl mb-4">Welcome to Your Website</h1>
-                <p className="mb-8">p</p>
+                        {/* Include your Login and Register forms here */}
+                        <Routes>
+                            <Route path="/login" element={<Login />} />
 
-                <div className="flex space-x-4">
-                    <Link to="/login" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Login
-                    </Link>
-                    <Link to="/register" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                        Register
-                    </Link>
+                            <Route path="/register" element={<Register />} />
+
+                            <Route path="/mail/verify-email" element={<Verify />}></Route>
+
+                        </Routes>
+
+                        {/* Navigation links */}
+                        <div className="flex justify-center space-x-4">
+                            {showButtons && (
+                                <>
+                                    <Link
+                                        to="/login"
+                                        className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link
+                                        to="/register"
+                                        className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    >
+                                        Register
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>    );
+        </div>
+    );
 };
 
-export default Hero;
+export default AuthContainer;

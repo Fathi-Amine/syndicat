@@ -5,7 +5,7 @@ const {addPayment, updatePayment, deletePayment, getPayments, getPaymentById, ge
 } = require('../Controllers/PaymentController')
 const authMiddleware = require('../Middlewares/authMiddleware')
 
-router.post('/add',addPayment)
+router.post('/add',authMiddleware,addPayment)
 router.patch('/update',updatePayment)
 router.delete('/delete',deletePayment)
 router.get('/',getPayments)

@@ -1,0 +1,19 @@
+services:
+  syndicat-backend:
+    build:
+      context: ./syndicat-backend
+      dockerfile: ./Dockerfile
+    image: syndicat-backend
+    command: npm start
+    env_file:
+      - ./syndicat-backend/.env
+    ports:
+      - 5000:5000
+  syndicat-frontend:
+    build:
+      context: ./syndicat-frontend
+      dockerfile: ./Dockerfile
+    image: syndicat-frontend
+    command: npm run dev
+    ports:
+      - 3000:3000

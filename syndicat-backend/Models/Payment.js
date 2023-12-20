@@ -26,6 +26,10 @@ const paymentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    client:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Client',
+    }
 },
     {
         timestamps: true,

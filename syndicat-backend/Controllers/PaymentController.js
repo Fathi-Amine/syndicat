@@ -9,8 +9,9 @@ const Client = require("../Models/Client");
 
 
 const addPayment = async (req, res)=>{
-    const {apartment, month, amount, paymentDate,isPaid, createdBy}=req.body
-    if(!apartment || !month || !amount || !paymentDate){
+    console.log(req.user)
+    const {apartment, month, amount, paymentDate,isPaid,client}=req.body
+    if(!apartment || !month || !amount || !paymentDate || !client){
         throw new BadRequestErrorClass("All fields are required")
     }
 
@@ -30,7 +31,8 @@ const addPayment = async (req, res)=>{
         amount,
         paymentDate:formattedPaymentDate,
         isPaid,
-        createdBy
+        createdBy:req.user.userId,
+        client
     }
 
     await Payment.create(paymentObj)
@@ -64,12 +66,12 @@ const updatePayment = async (req, res)=>{
 
 const deletePayment = async (req, res)=>{
     await Payment.findOneAndDelete({_id:req.body._id})
-    res.status(StatusCodes.OK).json({msg:"Client deleted"})
+    res.status(StatusCodes.OK).json({msg:"Payment trace deleted"})
 }
 
 const getPayments = async (req, res)=>{
     try {
-        const payments = await Payment.find();
+        const payments = await Payment.find().populate(['apartment', 'createdBy', 'client']);
         res.status(StatusCodes.OK).json(payments);
     } catch (error) {
         console.error('Error fetching payments:', error);
@@ -78,12 +80,13 @@ const getPayments = async (req, res)=>{
 }
 
 const getPaymentById = async(req,res)=>{
+    console.log(req.params)
     try {
-        const payment = await Payment.findById(req.params.paymentId);
+        const payment = await Payment.findById(req.params.paymentId).populate(['apartment', 'client', 'createdBy']);
         if (!payment) {
             throw new BadRequestErrorClass("Payment Not Found");
         }
-        res.status(StatusCodes).json(payment);
+        res.status(StatusCodes.OK).json(payment);
     } catch (error) {
         console.error('Error fetching payment by ID:', error);
         res.status(500).json({ error: 'Internal Server Error' });

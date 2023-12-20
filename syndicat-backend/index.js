@@ -2,6 +2,8 @@ require('dotenv').config();
 require('express-async-errors');
 const express = require('express')
 const app = express()
+const swaggerJsdoc = require('./Config/swagger');
+const swaggerUi = require('swagger-ui-express');
 const mongoose = require('mongoose')
 const PORT = process.env.PORT
 const authRoutes = require('./Routes/AuthRoutes')
@@ -17,6 +19,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const rateLimiter = require('express-rate-limit');
 const errorHandlerMiddleware = require('./Middlewares/errorHandler');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 
 app.use(
     rateLimiter({

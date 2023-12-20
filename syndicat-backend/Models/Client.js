@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 const validator = require("validator");
-const { v4: uuidv4 } = require('uuid');
+// const { v4: uuidv4 } = require('uuid');
 
 const clientSchema = new mongoose.Schema({
     _sub: {
         type: String,
-        default: uuidv4,
-        unique: true,
+        unique: true
     },
     name: {
         type: String,
